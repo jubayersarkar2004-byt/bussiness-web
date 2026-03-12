@@ -1,0 +1,1825 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madinat Al Furshan — Tailor Management</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   DESIGN TOKENS
+═══════════════════════════════════════════ */
+:root {
+  --ink:     #0a1520;
+  --ink2:    #1a2d42;
+  --ink3:    #2a3f57;
+  --gold:    #b8893a;
+  --gold2:   #d4a855;
+  --gold3:   #f0cc88;
+  --cream:   #f8f4ee;
+  --cream2:  #ede8df;
+  --cream3:  #e2dbd0;
+  --white:   #ffffff;
+  --gray:    #6b7f96;
+  --gray2:   #a0b0c0;
+  --green:   #1a7a45;
+  --green-b: #e8f5ee;
+  --red:     #b02a2a;
+  --red-b:   #fceaea;
+  --blue:    #1e5f9e;
+  --blue-b:  #e8f0fa;
+  --amber:   #a06010;
+  --amber-b: #fef3e2;
+  --border:  #ddd6cc;
+  --border2: #ebe5dc;
+  --text:    #1a2636;
+  --text2:   #4a5f77;
+  --shadow:  0 1px 3px rgba(10,21,32,.06), 0 4px 16px rgba(10,21,32,.08);
+  --shadow2: 0 2px 8px rgba(10,21,32,.05);
+  --radius:  12px;
+  --radius2: 8px;
+}
+
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { font-size:15px; }
+body { font-family:'DM Sans', sans-serif; background:var(--cream); color:var(--text); min-height:100vh; -webkit-font-smoothing:antialiased; }
+button { font-family:'DM Sans', sans-serif; cursor:pointer; }
+input, select, textarea { font-family:'DM Sans', sans-serif; }
+.hidden { display:none !important; }
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════ */
+.badge { display:inline-flex; align-items:center; padding:3px 10px; border-radius:20px; font-size:11px; font-weight:600; letter-spacing:.4px; white-space:nowrap; }
+.b-green  { background:var(--green-b); color:var(--green); }
+.b-gold   { background:var(--amber-b); color:var(--amber); }
+.b-blue   { background:var(--blue-b);  color:var(--blue);  }
+.b-red    { background:var(--red-b);   color:var(--red);   }
+.b-gray   { background:var(--cream2);  color:var(--gray);  }
+
+.alert { padding:12px 14px; border-radius:var(--radius2); font-size:13px; display:flex; align-items:center; gap:8px; margin-bottom:14px; }
+.a-ok  { background:var(--green-b); color:var(--green); border:1px solid #a8d8be; }
+.a-err { background:var(--red-b);   color:var(--red);   border:1px solid #e8b4b4; }
+.a-warn{ background:var(--amber-b); color:var(--amber); border:1px solid #e8c87a; }
+
+/* ═══════════════════════════════════════════
+   LOGIN PAGE
+═══════════════════════════════════════════ */
+#loginPage { min-height:100vh; display:flex; align-items:stretch; }
+
+.login-panel {
+  width:44%; background:var(--ink);
+  display:flex; flex-direction:column; justify-content:center; align-items:center;
+  padding:64px 52px; position:relative; overflow:hidden;
+}
+.login-panel::before {
+  content:''; position:absolute; top:-120px; right:-120px;
+  width:400px; height:400px; border-radius:50%;
+  border:80px solid rgba(184,137,58,.07);
+}
+.login-panel::after {
+  content:''; position:absolute; bottom:-80px; left:-80px;
+  width:280px; height:280px; border-radius:50%;
+  border:50px solid rgba(184,137,58,.05);
+}
+.lp-inner { position:relative; z-index:1; text-align:center; width:100%; max-width:300px; }
+.lp-logo { font-size:56px; margin-bottom:14px; display:block; }
+.lp-name { font-family:'Cormorant Garamond', serif; color:var(--white); font-size:32px; font-weight:600; letter-spacing:2px; line-height:1.2; }
+.lp-ar { color:var(--gold2); font-size:13px; letter-spacing:5px; margin-top:6px; }
+.lp-rule { width:60px; height:1px; background:linear-gradient(90deg,transparent,var(--gold2),transparent); margin:20px auto; }
+.lp-tag { color:var(--gray2); font-size:13px; line-height:1.7; }
+.lp-features { margin-top:36px; text-align:left; display:flex; flex-direction:column; gap:12px; }
+.lp-feat { display:flex; align-items:center; gap:12px; color:var(--gray2); font-size:13px; }
+.lp-feat-icon { width:28px; height:28px; background:rgba(184,137,58,.12); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:13px; flex-shrink:0; }
+
+.login-form-wrap {
+  flex:1; display:flex; align-items:center; justify-content:center;
+  padding:60px 40px; background:var(--cream);
+}
+.login-form { width:100%; max-width:400px; }
+.login-form h2 { font-family:'Cormorant Garamond', serif; font-size:30px; color:var(--ink); margin-bottom:4px; }
+.login-form > p { color:var(--gray); font-size:13px; margin-bottom:28px; }
+
+/* ═══════════════════════════════════════════
+   FORM ELEMENTS
+═══════════════════════════════════════════ */
+.fg { margin-bottom:16px; }
+.fg label { display:block; font-size:11px; font-weight:600; color:var(--ink); margin-bottom:5px; letter-spacing:.8px; text-transform:uppercase; }
+.fg input, .fg select, .fg textarea {
+  width:100%; padding:11px 14px; border:1.5px solid var(--border);
+  border-radius:var(--radius2); font-size:14px; background:var(--white);
+  color:var(--text); transition:border-color .15s, box-shadow .15s; outline:none;
+}
+.fg input:focus, .fg select:focus, .fg textarea:focus {
+  border-color:var(--ink); box-shadow:0 0 0 3px rgba(10,21,32,.06);
+}
+.fg input::placeholder { color:var(--gray2); }
+.fg textarea { resize:vertical; min-height:72px; line-height:1.5; }
+.fg select { appearance:none; background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7f96' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; }
+.fg-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.fg-row3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+
+/* ═══════════════════════════════════════════
+   BUTTONS
+═══════════════════════════════════════════ */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:10px 20px; border:none; border-radius:var(--radius2); font-size:13px; font-weight:600; transition:all .15s; white-space:nowrap; }
+.btn-primary { background:var(--ink); color:var(--white); }
+.btn-primary:hover { background:var(--ink2); transform:translateY(-1px); box-shadow:0 4px 12px rgba(10,21,32,.2); }
+.btn-gold { background:var(--gold); color:var(--white); }
+.btn-gold:hover { background:var(--gold2); transform:translateY(-1px); }
+.btn-outline { background:transparent; color:var(--ink); border:1.5px solid var(--border); }
+.btn-outline:hover { border-color:var(--ink); background:var(--ink); color:var(--white); }
+.btn-danger { background:var(--red); color:var(--white); }
+.btn-danger:hover { opacity:.88; }
+.btn-ghost { background:transparent; color:var(--gray); border:1.5px solid var(--border2); }
+.btn-ghost:hover { background:var(--cream2); color:var(--ink); }
+.btn-sm { padding:6px 13px; font-size:12px; }
+.btn-lg { padding:13px 24px; font-size:15px; font-weight:600; }
+.btn-fw { width:100%; justify-content:center; }
+.btn-login { width:100%; padding:13px; background:var(--ink); color:var(--white); border:none; border-radius:var(--radius2); font-size:14px; font-weight:600; transition:all .15s; }
+.btn-login:hover { background:var(--gold); }
+
+/* ═══════════════════════════════════════════
+   APP SHELL
+═══════════════════════════════════════════ */
+#appShell { display:none; flex-direction:column; min-height:100vh; }
+
+.topbar {
+  background:var(--ink); height:62px; padding:0 24px;
+  display:flex; align-items:center; justify-content:space-between;
+  position:sticky; top:0; z-index:200;
+  box-shadow:0 1px 0 rgba(255,255,255,.05), 0 4px 20px rgba(10,21,32,.3);
+}
+.tb-left { display:flex; align-items:center; gap:14px; }
+.tb-logo { font-size:22px; }
+.tb-brand { }
+.tb-brand h2 { font-family:'Cormorant Garamond', serif; color:var(--white); font-size:19px; font-weight:600; letter-spacing:.8px; line-height:1; }
+.tb-brand small { color:var(--gold2); font-size:10px; letter-spacing:3px; text-transform:uppercase; }
+.tb-right { display:flex; align-items:center; gap:12px; }
+.tb-user { display:flex; align-items:center; gap:10px; }
+.tb-avatar { width:34px; height:34px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; color:var(--ink); flex-shrink:0; }
+.tb-info small { color:var(--gold2); font-size:10px; display:block; letter-spacing:1.5px; text-transform:uppercase; }
+.tb-info span { color:var(--white); font-size:13px; font-weight:500; }
+.tb-logout { background:rgba(255,255,255,.07); border:1px solid rgba(255,255,255,.12); color:var(--white); padding:7px 14px; border-radius:var(--radius2); font-size:12px; font-weight:500; transition:all .15s; }
+.tb-logout:hover { background:var(--red); border-color:var(--red); }
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.layout { display:flex; flex:1; }
+.sidebar {
+  width:212px; background:var(--white); border-right:1px solid var(--border2);
+  padding:20px 0; flex-shrink:0; overflow-y:auto;
+}
+.nav-group { padding:0 10px; margin-bottom:6px; }
+.nav-group-label { font-size:10px; font-weight:700; color:var(--gray2); letter-spacing:2.5px; text-transform:uppercase; padding:8px 10px 5px; }
+.nav-item {
+  display:flex; align-items:center; gap:9px; padding:10px 12px;
+  border-radius:var(--radius2); font-size:13px; font-weight:500;
+  color:var(--gray); transition:all .12s; margin-bottom:1px; cursor:pointer;
+}
+.nav-item:hover { background:var(--cream); color:var(--ink); }
+.nav-item.active { background:var(--ink); color:var(--white); }
+.nav-item .ni { font-size:15px; width:18px; text-align:center; flex-shrink:0; }
+
+/* ═══════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════ */
+.main { flex:1; padding:28px; overflow-y:auto; }
+.page { display:none; animation:fadeIn .2s ease; }
+.page.active { display:block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+@keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
+
+.ph { margin-bottom:24px; }
+.ph h1 { font-family:'Cormorant Garamond', serif; font-size:28px; font-weight:600; color:var(--ink); }
+.ph p { color:var(--gray); font-size:13px; margin-top:3px; }
+.ph-row { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:24px; gap:14px; flex-wrap:wrap; }
+.ph-row h1 { font-family:'Cormorant Garamond', serif; font-size:28px; color:var(--ink); }
+.ph-row p { color:var(--gray); font-size:13px; margin-top:3px; }
+
+/* ═══════════════════════════════════════════
+   CARDS
+═══════════════════════════════════════════ */
+.card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border2); padding:22px; box-shadow:var(--shadow2); }
+.card + .card { margin-top:16px; }
+.card-title { font-family:'Cormorant Garamond', serif; font-size:17px; font-weight:600; color:var(--ink); margin-bottom:16px; }
+.card-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; gap:10px; }
+
+/* ═══════════════════════════════════════════
+   STAT CARDS
+═══════════════════════════════════════════ */
+.stats-row { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+.stat-card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border2); padding:18px; box-shadow:var(--shadow2); }
+.stat-icon { width:40px; height:40px; border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:18px; margin-bottom:12px; }
+.si-ink { background:#edf1f7; }
+.si-gold { background:var(--amber-b); }
+.si-green { background:var(--green-b); }
+.si-blue { background:var(--blue-b); }
+.si-red { background:var(--red-b); }
+.stat-val { font-family:'Cormorant Garamond', serif; font-size:26px; font-weight:700; color:var(--ink); line-height:1; }
+.stat-lbl { font-size:12px; color:var(--gray); margin-top:4px; font-weight:500; }
+.stat-sub { font-size:11px; font-weight:600; margin-top:6px; }
+.stat-sub.up { color:var(--green); }
+.stat-sub.dn { color:var(--red); }
+
+/* ═══════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════ */
+.tw { overflow-x:auto; }
+table { width:100%; border-collapse:collapse; }
+thead th { padding:10px 13px; text-align:left; font-size:11px; font-weight:700; color:var(--gray); letter-spacing:.9px; text-transform:uppercase; background:var(--cream); border-bottom:1px solid var(--border2); white-space:nowrap; }
+tbody td { padding:12px 13px; font-size:13px; color:var(--text2); border-bottom:1px solid var(--border2); }
+tbody tr:last-child td { border-bottom:none; }
+tbody tr:hover td { background:#fafaf8; }
+.td-bold { font-weight:600; color:var(--ink); }
+.td-mono { font-family:monospace; font-size:12px; }
+.empty-row td { text-align:center; padding:40px; color:var(--gray); font-size:13px; }
+
+/* ═══════════════════════════════════════════
+   SECTION LABELS & DIVIDERS
+═══════════════════════════════════════════ */
+.sec-label { font-size:10px; font-weight:700; color:var(--gold); letter-spacing:2.5px; text-transform:uppercase; margin-bottom:12px; }
+.divider { border:none; border-top:1px solid var(--border2); margin:20px 0; }
+
+/* ═══════════════════════════════════════════
+   STOCK BARS
+═══════════════════════════════════════════ */
+.stock-bar-wrap { background:var(--cream2); border-radius:6px; height:6px; overflow:hidden; margin-top:10px; }
+.stock-bar { height:100%; border-radius:6px; transition:width .4s; }
+.sb-high { background:var(--green); }
+.sb-mid { background:var(--gold2); }
+.sb-low { background:var(--red); }
+
+/* ═══════════════════════════════════════════
+   CHART
+═══════════════════════════════════════════ */
+.chart-wrap { display:flex; align-items:flex-end; gap:8px; height:160px; border-bottom:1.5px solid var(--border2); margin-bottom:6px; padding-bottom:0; }
+.chart-col { flex:1; display:flex; flex-direction:column; align-items:center; gap:4px; }
+.chart-val { font-size:10px; color:var(--gray); font-weight:600; }
+.chart-bar { width:100%; background:linear-gradient(to top, var(--ink), var(--ink3)); border-radius:4px 4px 0 0; min-height:4px; }
+.chart-lbl { font-size:10px; color:var(--gray); }
+
+/* ═══════════════════════════════════════════
+   FABRIC PROGRESS BARS
+═══════════════════════════════════════════ */
+.fab-row { display:flex; align-items:center; gap:10px; }
+.fab-name { flex:0 0 80px; font-size:12px; font-weight:600; color:var(--ink); }
+.fab-bar-w { flex:1; background:var(--cream2); border-radius:4px; height:7px; overflow:hidden; }
+.fab-bar-f { height:100%; background:var(--gold); border-radius:4px; }
+.fab-pct { flex:0 0 34px; font-size:11px; font-weight:700; color:var(--ink); text-align:right; }
+
+/* ═══════════════════════════════════════════
+   STOCK CARDS GRID
+═══════════════════════════════════════════ */
+.stock-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.stock-card { background:var(--white); border:1px solid var(--border2); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow2); }
+.stock-name { font-weight:600; font-size:14px; color:var(--ink); margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; }
+.stock-nums { display:flex; gap:14px; }
+.sn-item { }
+.sn-val { font-family:'Cormorant Garamond', serif; font-size:22px; font-weight:700; line-height:1; }
+.sn-lbl { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--gray); margin-top:2px; }
+.sn-blue { color:var(--blue); }
+.sn-red { color:var(--red); }
+.sn-green { color:var(--green); }
+
+/* ═══════════════════════════════════════════
+   MODAL
+═══════════════════════════════════════════ */
+.overlay { display:none; position:fixed; inset:0; background:rgba(10,21,32,.6); z-index:500; align-items:center; justify-content:center; padding:20px; backdrop-filter:blur(2px); }
+.overlay.open { display:flex; }
+.modal { background:var(--white); border-radius:var(--radius); max-width:580px; width:100%; max-height:90vh; overflow-y:auto; box-shadow:0 24px 64px rgba(10,21,32,.3); }
+.modal.sm { max-width:420px; }
+.modal.lg { max-width:700px; }
+.modal-head { padding:18px 22px; border-bottom:1px solid var(--border2); display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; background:var(--white); z-index:1; }
+.modal-head h3 { font-family:'Cormorant Garamond', serif; font-size:20px; color:var(--ink); }
+.modal-close { background:none; border:none; font-size:20px; color:var(--gray); width:32px; height:32px; border-radius:6px; display:flex; align-items:center; justify-content:center; transition:background .12s; }
+.modal-close:hover { background:var(--cream2); }
+.modal-body { padding:22px; }
+.modal-foot { padding:14px 22px; border-top:1px solid var(--border2); display:flex; gap:9px; justify-content:flex-end; }
+
+/* ═══════════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════════ */
+.settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+.set-card { background:var(--white); border-radius:var(--radius); border:1px solid var(--border2); padding:22px; box-shadow:var(--shadow2); }
+.set-card h3 { font-family:'Cormorant Garamond', serif; font-size:18px; color:var(--ink); margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.danger-zone { border-color:var(--red); background:#fffafa; }
+.danger-zone h3 { color:var(--red); }
+
+/* ═══════════════════════════════════════════
+   USER ROWS
+═══════════════════════════════════════════ */
+.user-row { display:flex; align-items:center; justify-content:space-between; padding:12px 0; border-bottom:1px solid var(--border2); gap:10px; }
+.user-row:last-child { border-bottom:none; }
+.user-row-info { flex:1; min-width:0; }
+.user-row-name { font-weight:600; font-size:14px; color:var(--ink); }
+.user-row-meta { font-size:12px; color:var(--gray); margin-top:2px; display:flex; align-items:center; gap:8px; }
+.user-row-actions { display:flex; gap:6px; flex-shrink:0; }
+
+/* ═══════════════════════════════════════════
+   MEMO PRINT
+═══════════════════════════════════════════ */
+@media print {
+  body * { display:none !important; }
+  #printZone { display:block !important; }
+  #printZone * { display:revert !important; }
+  #printZone {
+    position:fixed; left:0; top:0; width:100%;
+    padding:32px; background:white;
+    font-family:'DM Sans',sans-serif; font-size:13px;
+  }
+}
+#printZone { display:none; }
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+#toast {
+  position:fixed; bottom:24px; right:24px; z-index:9999;
+  background:var(--ink); color:var(--white); padding:12px 20px;
+  border-radius:var(--radius2); font-size:13px; font-weight:500;
+  box-shadow:0 8px 24px rgba(10,21,32,.25);
+  transform:translateY(100px); opacity:0; transition:all .25s cubic-bezier(.34,1.56,.64,1);
+  max-width:320px;
+}
+#toast.show { transform:translateY(0); opacity:1; }
+#toast.t-ok  { background:var(--green); }
+#toast.t-err { background:var(--red); }
+
+/* ═══════════════════════════════════════════
+   SEARCH BAR
+═══════════════════════════════════════════ */
+.search-bar { padding:9px 14px; border:1.5px solid var(--border); border-radius:var(--radius2); font-size:13px; outline:none; transition:border .15s; width:200px; background:var(--white); color:var(--text); }
+.search-bar:focus { border-color:var(--ink); }
+
+/* ═══════════════════════════════════════════
+   DANGER ACTION ROW
+═══════════════════════════════════════════ */
+.danger-row { display:flex; align-items:center; justify-content:space-between; padding:14px; border:1px solid #e8b4b4; border-radius:var(--radius2); margin-bottom:10px; gap:14px; flex-wrap:wrap; }
+.danger-row:last-child { margin-bottom:0; }
+.danger-row-info h4 { font-size:13px; font-weight:600; color:var(--ink); }
+.danger-row-info p { font-size:12px; color:var(--gray); margin-top:2px; }
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+@media(max-width:960px) {
+  .login-panel { display:none; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .stock-grid { grid-template-columns:1fr 1fr; }
+  .settings-grid { grid-template-columns:1fr; }
+  .fg-row3 { grid-template-columns:1fr 1fr; }
+}
+@media(max-width:640px) {
+  .sidebar { display:none; }
+  .main { padding:16px; }
+  .stats-row { grid-template-columns:1fr 1fr; }
+  .stock-grid { grid-template-columns:1fr; }
+  .fg-row { grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════
+  LOGIN
+═══════════════════════════════════════ -->
+<div id="loginPage">
+  <div class="login-panel">
+    <div class="lp-inner">
+      <span class="lp-logo">✂️</span>
+      <div class="lp-name">Madinat Al Furshan</div>
+      <div class="lp-ar">مدينة الفرشان</div>
+      <div class="lp-rule"></div>
+      <p class="lp-tag">Professional Tailoring Business Management System</p>
+      <div class="lp-features">
+        <div class="lp-feat"><span class="lp-feat-icon">🧾</span>Order Entry & Cash Memo</div>
+        <div class="lp-feat"><span class="lp-feat-icon">📊</span>Sales History & Analytics</div>
+        <div class="lp-feat"><span class="lp-feat-icon">📦</span>Fabric Stock Management</div>
+        <div class="lp-feat"><span class="lp-feat-icon">⚙️</span>Full Admin Control Panel</div>
+      </div>
+    </div>
+  </div>
+  <div class="login-form-wrap">
+    <div class="login-form">
+      <h2>Welcome Back</h2>
+      <p>Enter your credentials to access the system</p>
+      <div id="loginAlert" class="alert a-err hidden">❌ Incorrect username or password. Please try again.</div>
+      <div class="fg">
+        <label>Username</label>
+        <input type="text" id="lUser" placeholder="Enter your username" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+      </div>
+      <div class="fg">
+        <label>Password</label>
+        <input type="password" id="lPass" placeholder="Enter your password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <button class="btn-login btn-lg" onclick="doLogin()">Sign In →</button>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+  APP SHELL
+═══════════════════════════════════════ -->
+<div id="appShell">
+  <header class="topbar">
+    <div class="tb-left">
+      <span class="tb-logo">✂️</span>
+      <div class="tb-brand">
+        <h2 id="topBizName">Madinat Al Furshan</h2>
+        <small>Tailor Management System</small>
+      </div>
+    </div>
+    <div class="tb-right">
+      <div class="tb-user">
+        <div class="tb-avatar" id="topAvatar">?</div>
+        <div class="tb-info">
+          <small id="topRole">EMPLOYEE</small>
+          <span id="topName">User</span>
+        </div>
+      </div>
+      <button class="tb-logout" onclick="doLogout()">Sign Out</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <nav class="sidebar" id="sidebar"></nav>
+    <main class="main">
+
+      <!-- ─── NEW ORDER ─── -->
+      <div class="page" id="pg-new-order">
+        <div class="ph-row">
+          <div><h1>New Order</h1><p>Create a new customer tailoring order</p></div>
+          <button class="btn btn-ghost btn-sm" onclick="resetOrderForm()">↺ Reset Form</button>
+        </div>
+        <div class="card">
+          <div class="sec-label">Customer Information</div>
+          <div class="fg-row">
+            <div class="fg"><label>Customer Name *</label><input type="text" id="o_name" placeholder="Full name"></div>
+            <div class="fg"><label>Phone Number *</label><input type="text" id="o_phone" placeholder="+974 XXXX XXXX"></div>
+          </div>
+          <div class="fg"><label>Address</label><input type="text" id="o_address" placeholder="Customer address (optional)"></div>
+
+          <hr class="divider">
+          <div class="sec-label">Order Details</div>
+          <div class="fg-row">
+            <div class="fg"><label>Fabric Type *</label><select id="o_fabric"><option value="">Select fabric...</option></select></div>
+            <div class="fg"><label>Garment Type *</label>
+              <input type="text" id="o_garment" list="garment_list" placeholder="Type or select garment..." autocomplete="off">
+              <datalist id="garment_list"></datalist>
+            </div>
+            <div class="fg"><label>Fabric Quantity (meters) *</label><input type="number" id="o_qty" min="0" step="0.25" placeholder="0.00"></div>
+            <div class="fg"><label>No. of Pieces / Items *</label><input type="number" id="o_pieces" min="1" step="1" placeholder="1"></div>
+            <div class="fg"><label>Color / Style</label><input type="text" id="o_color" placeholder="e.g. Navy Blue"></div>
+            <div class="fg"><label>Order Date</label><input type="date" id="o_date"></div>
+            <div class="fg"><label>Delivery Date *</label><input type="date" id="o_delivery"></div>
+          </div>
+
+          <hr class="divider">
+          <div class="sec-label">Measurements (Optional)</div>
+          <div class="fg-row3">
+            <div class="fg"><label>Chest (cm)</label><input type="number" id="m_chest" placeholder="96"></div>
+            <div class="fg"><label>Waist (cm)</label><input type="number" id="m_waist" placeholder="82"></div>
+            <div class="fg"><label>Shoulder (cm)</label><input type="number" id="m_shoulder" placeholder="44"></div>
+            <div class="fg"><label>Length (cm)</label><input type="number" id="m_length" placeholder="110"></div>
+            <div class="fg"><label>Hip (cm)</label><input type="number" id="m_hip" placeholder="96"></div>
+            <div class="fg"><label>Sleeve (cm)</label><input type="number" id="m_sleeve" placeholder="62"></div>
+          </div>
+
+          <hr class="divider">
+          <div class="sec-label">Pricing</div>
+          <div class="fg-row">
+            <div class="fg"><label>Total Price (QAR) *</label><input type="number" id="o_price" min="0" step="0.5" placeholder="0.00"></div>
+            <div class="fg"><label>Advance Paid (QAR)</label><input type="number" id="o_advance" min="0" step="0.5" placeholder="0.00"></div>
+          </div>
+          <div class="fg"><label>Special Instructions</label><textarea id="o_notes" placeholder="Embroidery details, button style, pockets, special requests..."></textarea></div>
+
+          <div id="orderFormAlert" class="hidden"></div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:8px;">
+            <button class="btn btn-ghost" onclick="resetOrderForm()">Cancel</button>
+            <button class="btn btn-primary" onclick="submitOrder()">💾 Save Order & Print Memo</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── MY ORDERS (Employee) ─── -->
+      <div class="page" id="pg-my-orders">
+        <div class="ph"><h1>My Orders</h1><p>Orders you have entered into the system</p></div>
+        <div class="card">
+          <div class="tw">
+            <table>
+              <thead><tr><th>Order #</th><th>Customer</th><th>Garment</th><th>Fabric</th><th>Delivery</th><th>Total QAR</th><th>Status</th><th></th></tr></thead>
+              <tbody id="myOrdersTb"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── DASHBOARD ─── -->
+      <div class="page" id="pg-dashboard">
+        <div class="ph"><h1>Business Dashboard</h1><p id="dashSubtitle">Live overview</p></div>
+        <div class="stats-row" id="dashStats"></div>
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:18px;">
+          <div class="card">
+            <div class="card-head"><span class="card-title">Monthly Revenue (QAR)</span><span class="badge b-gold">Last 6 Months</span></div>
+            <div class="chart-wrap" id="revChart"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Top Fabrics</div>
+            <div id="topFabrics" style="display:flex;flex-direction:column;gap:10px;"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">📦 Fabric Stock Overview</span>
+            <button class="btn btn-gold btn-sm" onclick="showPage('pg-stock')">Manage Stock →</button>
+          </div>
+          <div class="stock-grid" id="dashStockGrid"></div>
+        </div>
+      </div>
+
+      <!-- ─── ORDER HISTORY ─── -->
+      <div class="page" id="pg-order-history">
+        <div class="ph-row">
+          <div><h1>Order History</h1><p>Complete record of all sales and orders</p></div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <input class="search-bar" type="text" id="ohSearch" placeholder="🔍 Search..." oninput="renderOrderHistory()">
+            <input type="date" id="ohFrom" style="padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--radius2);font-size:13px;outline:none;background:var(--white);" title="From date" oninput="renderOrderHistory()">
+            <input type="date" id="ohTo" style="padding:8px 11px;border:1.5px solid var(--border);border-radius:var(--radius2);font-size:13px;outline:none;background:var(--white);" title="To date" oninput="renderOrderHistory()">
+            <button class="btn btn-ghost btn-sm" onclick="clearOHFilter()">Clear</button>
+          </div>
+        </div>
+        <div class="stats-row" id="ohStats"></div>
+        <div class="card">
+          <div class="card-head">
+            <span class="card-title">Sales Records</span>
+            <span id="ohCount" class="badge b-blue">0 records</span>
+          </div>
+          <div class="tw">
+            <table>
+              <thead><tr><th>Date</th><th>Order #</th><th>Customer</th><th>Phone</th><th>Garment</th><th>Fabric</th><th>Fabric(m)</th><th>Pieces</th><th>Price QAR</th><th>Advance</th><th>Balance</th><th>Status</th><th>By</th><th>Actions</th></tr></thead>
+              <tbody id="ohTb"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── FABRIC STOCK ─── -->
+      <div class="page" id="pg-stock">
+        <div class="ph-row">
+          <div><h1>Fabric Stock</h1><p>Track purchased, used, and remaining fabric</p></div>
+          <button class="btn btn-gold" onclick="openBuyFabric()">+ Add Fabric Purchase</button>
+        </div>
+        <div class="stock-grid" id="stockCards" style="margin-bottom:18px;"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card">
+            <div class="card-head"><span class="card-title">📥 Purchase History</span><span id="purchaseCount" class="badge b-blue">0</span></div>
+            <div class="tw">
+              <table><thead><tr><th>Date</th><th>Fabric</th><th>Qty (m)</th><th>Notes</th></tr></thead><tbody id="purchaseTb"></tbody></table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-head"><span class="card-title">📤 Usage History</span><span id="usageCount" class="badge b-blue">0</span></div>
+            <div class="tw">
+              <table><thead><tr><th>Date</th><th>Fabric</th><th>Used (m)</th><th>Order #</th></tr></thead><tbody id="usageTb"></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── ANALYTICS ─── -->
+      <div class="page" id="pg-analytics">
+        <div class="ph"><h1>Analytics</h1><p>Detailed business performance insights</p></div>
+        <div class="stats-row" id="analyticsStats"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <div class="card"><div class="card-title">Orders by Garment Type</div><div id="garmentBreak" style="display:flex;flex-direction:column;gap:10px;"></div></div>
+          <div class="card"><div class="card-title">Payment Summary</div><div id="paySummary" style="display:flex;flex-direction:column;gap:10px;margin-top:4px;"></div></div>
+        </div>
+      </div>
+
+      <!-- ─── SETTINGS ─── -->
+      <div class="page" id="pg-settings">
+        <div class="ph"><h1>System Settings</h1><p>Full administrative control — business info, users, security & more</p></div>
+        <div class="settings-grid">
+
+          <!-- Business Info -->
+          <div class="set-card">
+            <h3>🏪 Business Information</h3>
+            <div class="fg"><label>Business Name</label><input type="text" id="s_bizname" placeholder="Madinat Al Furshan"></div>
+            <div class="fg"><label>Owner Name</label><input type="text" id="s_owner" placeholder="Owner full name"></div>
+            <div class="fg"><label>Phone Number</label><input type="text" id="s_phone" placeholder="+974 XXXX XXXX"></div>
+            <div class="fg"><label>Address / Location</label><input type="text" id="s_address" placeholder="Doha, Qatar"></div>
+            <div class="fg"><label>Cash Memo Footer Message</label><input type="text" id="s_footer" placeholder="Thank you for your business!"></div>
+            <div id="bizSaveAlert" class="hidden"></div>
+            <button class="btn btn-gold" onclick="saveBizInfo()">💾 Save Business Info</button>
+          </div>
+
+          <!-- Change Own Password -->
+          <div class="set-card">
+            <h3>🔑 Change My Password</h3>
+            <div class="fg"><label>Current Password</label><input type="password" id="cp_current" placeholder="Enter current password"></div>
+            <div class="fg"><label>New Password</label><input type="password" id="cp_new" placeholder="Enter new password (min 4 chars)"></div>
+            <div class="fg"><label>Confirm New Password</label><input type="password" id="cp_confirm" placeholder="Re-enter new password"></div>
+            <div id="cpAlert" class="hidden"></div>
+            <button class="btn btn-outline" onclick="changeMyPassword()">Update Password</button>
+          </div>
+
+          <!-- User Management (full width) -->
+          <div class="set-card" style="grid-column:1/-1;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+              <h3 style="margin-bottom:0;">👥 User Management</h3>
+              <button class="btn btn-primary btn-sm" onclick="openUserModal()">+ Add New User</button>
+            </div>
+            <div id="userListEl"></div>
+          </div>
+
+          <!-- Fabric Types -->
+          <div class="set-card">
+            <h3>🧵 Fabric Type Library</h3>
+            <div id="fabricTypeList" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;"></div>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="newFabricInput" placeholder="Add new fabric type..." style="flex:1;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius2);font-size:13px;outline:none;background:var(--white);">
+              <button class="btn btn-gold" onclick="addFabricType()">Add</button>
+            </div>
+          </div>
+
+          <!-- Garment Types -->
+          <div class="set-card">
+            <h3>👔 Garment Type Library</h3>
+            <p style="font-size:12px;color:var(--gray);margin-bottom:12px;">Employees can type or select from these when creating orders.</p>
+            <div id="garmentTypeList" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px;"></div>
+            <div style="display:flex;gap:8px;">
+              <input type="text" id="newGarmentInput" placeholder="Add new garment type..." style="flex:1;padding:10px 13px;border:1.5px solid var(--border);border-radius:var(--radius2);font-size:13px;outline:none;background:var(--white);">
+              <button class="btn btn-gold" onclick="addGarmentType()">Add</button>
+            </div>
+          </div>
+
+          <!-- Danger Zone -->
+          <div class="set-card danger-zone">
+            <h3>⚠️ Danger Zone</h3>
+            <div class="danger-row">
+              <div class="danger-row-info">
+                <h4>Clear Fabric Stock Data</h4>
+                <p>Remove all stock quantities and purchase records. Orders are not affected.</p>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="clearStockData()">Clear Stock</button>
+            </div>
+            <div class="danger-row">
+              <div class="danger-row-info">
+                <h4>Clear All Order History</h4>
+                <p>Permanently delete all orders and sales records. Stock data is not affected.</p>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="clearOrderData()">Clear Orders</button>
+            </div>
+            <div class="danger-row">
+              <div class="danger-row-info">
+                <h4>Factory Reset</h4>
+                <p>Delete everything — all orders, stock, and purchases. Users and settings are kept.</p>
+              </div>
+              <button class="btn btn-danger btn-sm" onclick="factoryReset()">Full Reset</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ═══════ MODALS ═══════ -->
+
+<!-- Memo Modal -->
+<div class="overlay" id="memoOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3>🧾 Cash Memo — Ready to Print</h3><button class="modal-close" onclick="closeModal('memoOverlay')">✕</button></div>
+    <div class="modal-body" id="memoBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('memoOverlay')">Close</button>
+      <button class="btn btn-primary" onclick="printMemo()">🖨️ Print Memo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Buy Fabric Modal -->
+<div class="overlay" id="buyFabricOverlay">
+  <div class="modal sm">
+    <div class="modal-head"><h3>📦 Add Fabric Purchase</h3><button class="modal-close" onclick="closeModal('buyFabricOverlay')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg">
+        <label>Fabric Name *</label>
+        <input type="text" id="bf_name" list="bf_list" placeholder="e.g. Cotton, Silk...">
+        <datalist id="bf_list"></datalist>
+      </div>
+      <div class="fg-row">
+        <div class="fg"><label>Quantity (meters) *</label><input type="number" id="bf_qty" min="0.5" step="0.5" placeholder="50"></div>
+        <div class="fg"><label>Purchase Date *</label><input type="date" id="bf_date"></div>
+      </div>
+      <div class="fg"><label>Notes (supplier, cost, etc.)</label><input type="text" id="bf_notes" placeholder="Optional"></div>
+      <div id="bfAlert" class="hidden"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('buyFabricOverlay')">Cancel</button>
+      <button class="btn btn-gold" onclick="saveFabricPurchase()">Add to Stock</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Modal (Add / Edit) -->
+<div class="overlay" id="userOverlay">
+  <div class="modal sm">
+    <div class="modal-head"><h3 id="userModalTitle">Add New User</h3><button class="modal-close" onclick="closeModal('userOverlay')">✕</button></div>
+    <div class="modal-body">
+      <div class="fg"><label>Full Name *</label><input type="text" id="um_name" placeholder="Full name"></div>
+      <div class="fg"><label>Username * <span style="color:var(--gray);font-size:11px;font-weight:400;text-transform:none;letter-spacing:0;">(used for login)</span></label>
+        <input type="text" id="um_user" placeholder="Unique username" autocomplete="off" autocorrect="off" autocapitalize="none" spellcheck="false">
+      </div>
+      <div class="fg"><label id="um_pass_label">Password *</label><input type="password" id="um_pass" placeholder="Minimum 4 characters"></div>
+      <div class="fg"><label>Role</label>
+        <select id="um_role"><option value="employee">👔 Employee</option><option value="owner">👑 Owner / Admin</option></select>
+      </div>
+      <div id="umAlert" class="hidden"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('userOverlay')">Cancel</button>
+      <button class="btn btn-primary" id="umSaveBtn" onclick="saveUser()">Create User</button>
+    </div>
+  </div>
+</div>
+
+<!-- View Order Modal -->
+<div class="overlay" id="viewOrderOverlay">
+  <div class="modal">
+    <div class="modal-head"><h3>Order Details</h3><button class="modal-close" onclick="closeModal('viewOrderOverlay')">✕</button></div>
+    <div class="modal-body" id="viewOrderBody"></div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('viewOrderOverlay')">Close</button>
+      <button class="btn btn-primary" id="viewPrintBtn">🖨️ Print Memo</button>
+    </div>
+  </div>
+</div>
+
+<!-- Change User Password Modal -->
+<div class="overlay" id="changePassOverlay">
+  <div class="modal sm">
+    <div class="modal-head">
+      <h3>🔑 Change Password</h3>
+      <button class="modal-close" onclick="closeModal('changePassOverlay')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="padding:12px 14px;background:var(--blue-b);border-radius:8px;margin-bottom:16px;font-size:13px;color:var(--blue);">
+        Changing password for: <strong id="cpUserLabel">—</strong>
+      </div>
+      <div class="fg">
+        <label>New Password *</label>
+        <input type="password" id="cup_new" placeholder="Minimum 4 characters">
+      </div>
+      <div class="fg">
+        <label>Confirm New Password *</label>
+        <input type="password" id="cup_confirm" placeholder="Re-enter new password" onkeydown="if(event.key==='Enter')saveUserPassword()">
+      </div>
+      <div id="cupAlert" class="hidden"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closeModal('changePassOverlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUserPassword()">✅ Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- Setup Banner -->
+<div id="setupBanner" class="hidden" style="position:fixed;top:0;left:0;right:0;z-index:8000;background:#b8893a;color:white;padding:12px 20px;text-align:center;font-size:13px;font-weight:600;">
+  ⚠️ Google Sheets not connected. Open the file in a text editor, find <code style="background:rgba(0,0,0,.2);padding:2px 6px;border-radius:4px;">https://script.google.com/macros/s/AKfycbzU6zGQGYlVuWq8eS8NS9pn1IoJfEFW8njpPzIGBVX73hrrEkjfJlYAyB14lS9-SkqU/exec</code> and replace with your Web App URL.
+</div>
+
+<div id="toast"></div>
+<div id="printZone"></div>
+
+<!-- ═══════════════════════════════════════
+  JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─── DB SCHEMA ─── */
+const SCHEMA = {
+  users: {
+    owner:    { username:'owner',    pass:'admin', name:'Joynul Abedin',    role:'owner'    },
+    employee: { username:'employee', pass:'1234',  name:'Ahmed Al-Rashidi', role:'employee' },
+  },
+  orders: [],
+  stock: {},        // { fabric: { purchased:N, used:N } }
+  purchases: [],    // [ { date, name, qty, notes } ]
+  fabricTypes: ['Cotton','Silk','Linen','Wool','Polyester','Velvet','Chiffon','Satin','Denim'],
+  garmentTypes: ['Kandura / Dishdasha','Suit (2-piece)','Suit (3-piece)','Trousers','Shirt','Abaya','Dress','Jacket','Alterations','Other'],
+  settings: {
+    bizname:   'Madinat Al Furshan',
+    ownerName: 'Joynul Abedin',
+    phone:     '+974 XXXX XXXX',
+    address:   'Doha, Qatar',
+    footer:    'Thank you for choosing Madinat Al Furshan — شكراً لاختياركم مدينة الفرشان',
+  },
+  _v: 5,
+};
+
+let DB = deepClone(SCHEMA);
+
+/* ─── GOOGLE SHEETS API ─── */
+function deepClone(obj) { return JSON.parse(JSON.stringify(obj)); }
+
+// ⚠️ PASTE YOUR WEB APP URL BELOW AFTER DEPLOYMENT
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw3XxJjJUzUExg-N2I8rQnDEE27gRobQBon1sHh0wkH4DY7LJvcoQUGKM9ToJqFaeCi/exec';
+
+function isConfigured() {
+  return SCRIPT_URL && SCRIPT_URL !== 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+}
+
+async function apiGet(params) {
+  const url = SCRIPT_URL + '?' + new URLSearchParams(params);
+  const res  = await fetch(url);
+  return res.json();
+}
+
+async function apiPost(data) {
+  const res = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(data),
+  });
+  return res.json();
+}
+
+async function loadDB() {
+  if (!isConfigured()) {
+    showSetupBanner();
+    DB = deepClone(SCHEMA);
+    return;
+  }
+  showLoader('Loading data from Google Sheets...');
+  try {
+    const result = await apiGet({ action: 'getAll' });
+    if (result.error) throw new Error(result.error);
+    DB = deepClone(SCHEMA);
+    if (result.users)    DB.users    = result.users;
+    if (result.orders)   DB.orders   = result.orders;
+    if (result.stock)    DB.stock    = result.stock;
+    if (result.purchases)DB.purchases= result.purchases;
+    if (result.settings) {
+      DB.settings      = Object.assign(deepClone(SCHEMA.settings), result.settings);
+      if (result.settings.fabricTypes)  DB.fabricTypes  = result.settings.fabricTypes;
+      if (result.settings.garmentTypes) DB.garmentTypes = result.settings.garmentTypes;
+    }
+    hideLoader();
+  } catch(e) {
+    hideLoader();
+    toast('⚠️ Could not connect to Google Sheets: ' + e.message, 'err');
+    DB = deepClone(SCHEMA);
+  }
+}
+
+function showLoader(msg) {
+  let el = document.getElementById('globalLoader');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'globalLoader';
+    el.style.cssText = 'position:fixed;inset:0;background:rgba(10,21,32,.7);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;color:white;font-size:15px;gap:14px;';
+    el.innerHTML = '<div style="font-size:36px;animation:spin 1s linear infinite">⚙️</div><div id="loaderMsg"></div>';
+    document.body.appendChild(el);
+  }
+  document.getElementById('loaderMsg').textContent = msg || 'Loading...';
+  el.style.display = 'flex';
+}
+
+function hideLoader() {
+  const el = document.getElementById('globalLoader');
+  if (el) el.style.display = 'none';
+}
+
+function showSetupBanner() {
+  const el = document.getElementById('setupBanner');
+  if (el) el.classList.remove('hidden');
+}
+
+/* ─── INIT ─── */
+document.addEventListener('DOMContentLoaded', () => { loadDB(); });
+
+/* ─── AUTH ─── */
+let CU = null;  // current user
+let _editingUser = null;
+
+function doLogin() {
+  const u = document.getElementById('lUser').value.trim();
+  const p = document.getElementById('lPass').value;
+  const alert = document.getElementById('loginAlert');
+  if (!u || !p) { showAlert('loginAlert','a-err','Please enter both username and password.'); return; }
+  const user = Object.values(DB.users).find(x => x.username === u && x.pass === p);
+  if (!user) { showAlert('loginAlert','a-err','❌ Incorrect username or password. Please try again.'); return; }
+  alert.classList.add('hidden');
+  enterApp(user);
+}
+
+function enterApp(user) {
+  CU = user;
+  document.getElementById('loginPage').style.display = 'none';
+  const app = document.getElementById('appShell');
+  app.style.display = 'flex';
+  app.style.flexDirection = 'column';
+  // Topbar
+  document.getElementById('topAvatar').textContent = user.name.charAt(0).toUpperCase();
+  document.getElementById('topName').textContent = user.name;
+  document.getElementById('topRole').textContent = user.role.toUpperCase();
+  document.getElementById('topBizName').textContent = DB.settings.bizname;
+  // Defaults
+  document.getElementById('o_date').value = today();
+  document.getElementById('bf_date').value = today();
+  document.getElementById('dashSubtitle').textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  buildSidebar();
+  populateFabricSelect();
+  if (user.role === 'owner') showPage('pg-dashboard');
+  else showPage('pg-new-order');
+}
+
+function doLogout() {
+  CU = null;
+  document.getElementById('appShell').style.display = 'none';
+  document.getElementById('loginPage').style.display = 'flex';
+  document.getElementById('lUser').value = '';
+  document.getElementById('lPass').value = '';
+  document.getElementById('loginAlert').classList.add('hidden');
+}
+
+/* ─── NAVIGATION ─── */
+const OWNER_NAV = [
+  { id:'pg-dashboard',    icon:'📊', label:'Dashboard'     },
+  { id:'pg-order-history',icon:'🗂️', label:'Order History' },
+  { id:'pg-stock',        icon:'📦', label:'Fabric Stock'  },
+  { id:'pg-analytics',    icon:'📈', label:'Analytics'     },
+  { id:'pg-new-order',    icon:'➕', label:'New Order'     },
+  { id:'pg-settings',     icon:'⚙️', label:'Settings'      },
+];
+const EMP_NAV = [
+  { id:'pg-new-order',  icon:'➕', label:'New Order' },
+  { id:'pg-my-orders',  icon:'📋', label:'My Orders' },
+];
+
+function buildSidebar() {
+  const nav = CU.role === 'owner' ? OWNER_NAV : EMP_NAV;
+  const sb = document.getElementById('sidebar');
+  sb.innerHTML = `<div class="nav-group"><div class="nav-group-label">Navigation</div>` +
+    nav.map(n => `<div class="nav-item" id="ni-${n.id}" onclick="showPage('${n.id}')"><span class="ni">${n.icon}</span>${n.label}</div>`).join('') +
+    `</div>`;
+}
+
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById(id);
+  if (pg) pg.classList.add('active');
+  const ni = document.getElementById('ni-' + id);
+  if (ni) ni.classList.add('active');
+  const map = {
+    'pg-dashboard':     renderDashboard,
+    'pg-order-history': renderOrderHistory,
+    'pg-my-orders':     renderMyOrders,
+    'pg-stock':         renderStock,
+    'pg-analytics':     renderAnalytics,
+    'pg-settings':      renderSettings,
+  };
+  if (map[id]) map[id]();
+}
+
+/* ─── ORDER FORM ─── */
+function populateFabricSelect() {
+  const sel = document.getElementById('o_fabric');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Select fabric...</option>' +
+    DB.fabricTypes.map(f => `<option${f===cur?' selected':''}>${f}</option>`).join('');
+  // Update fabric datalist for buy fabric modal
+  const dl = document.getElementById('bf_list');
+  if (dl) dl.innerHTML = DB.fabricTypes.map(f => `<option value="${f}">`).join('');
+  // Update garment datalist
+  const gDL = document.getElementById('garment_list');
+  if (gDL) gDL.innerHTML = (DB.garmentTypes||[]).map(g => `<option value="${g}">`).join('');
+}
+
+function resetOrderForm() {
+  const ids = ['o_name','o_phone','o_address','o_color','o_notes','o_price','o_advance',
+                'm_chest','m_waist','m_shoulder','m_length','m_hip','m_sleeve'];
+  ids.forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('o_fabric').value = '';
+  document.getElementById('o_pieces').value = '1';
+  document.getElementById('o_garment').value = '';
+  document.getElementById('o_qty').value = '';
+  document.getElementById('o_date').value = today();
+  document.getElementById('o_delivery').value = '';
+  document.getElementById('orderFormAlert').className = 'hidden';
+}
+
+async function submitOrder() {
+  const v = id => document.getElementById(id)?.value?.trim() || '';
+  const n = id => parseFloat(document.getElementById(id)?.value) || 0;
+
+  const name     = v('o_name');
+  const phone    = v('o_phone');
+  const fabric   = v('o_fabric');
+  const garment  = v('o_garment');
+  const qty      = n('o_qty');
+  const delivery = v('o_delivery');
+  const price    = n('o_price');
+
+  if (!name || !phone || !fabric || !garment || !qty || !delivery || !price) {
+    showAlert('orderFormAlert','a-err','⚠️ Please fill all required fields marked with *.');
+    return;
+  }
+  if (qty <= 0) { showAlert('orderFormAlert','a-err','⚠️ Quantity must be greater than 0.'); return; }
+  if (price <= 0) { showAlert('orderFormAlert','a-err','⚠️ Price must be greater than 0.'); return; }
+
+  const advance = n('o_advance');
+  if (advance > price) { showAlert('orderFormAlert','a-err','⚠️ Advance paid cannot exceed total price.'); return; }
+
+  const order = {
+    id: 'ORD-' + Date.now(),
+    name, phone,
+    address:  v('o_address'),
+    fabric, garment, qty,
+    pieces: parseInt(document.getElementById('o_pieces').value)||1,
+    color:    v('o_color'),
+    date:     v('o_date') || today(),
+    delivery, price, advance,
+    notes:    v('o_notes'),
+    status:   'Pending',
+    measurements: {
+      chest:    v('m_chest'),    waist:  v('m_waist'),
+      shoulder: v('m_shoulder'), length: v('m_length'),
+      hip:      v('m_hip'),      sleeve: v('m_sleeve'),
+    },
+    createdBy: CU.name,
+    createdAt: new Date().toISOString(),
+  };
+
+  showLoader('Saving order...');
+  try {
+    const result = await apiPost({ action: 'saveOrder', data: order });
+    if (result.error) throw new Error(result.error);
+    // Update local cache
+    DB.orders.unshift(order);
+    if (!DB.stock[fabric]) DB.stock[fabric] = { purchased: 0, used: 0 };
+    DB.stock[fabric].used = +(DB.stock[fabric].used + qty).toFixed(2);
+    hideLoader();
+    showAlert('orderFormAlert','a-ok','✅ Order saved to Google Sheets!');
+    toast('Order ' + order.id + ' created!', 'ok');
+    showMemo(order);
+    setTimeout(resetOrderForm, 800);
+  } catch(e) {
+    hideLoader();
+    showAlert('orderFormAlert','a-err','❌ Error saving order: ' + e.message);
+  }
+}
+
+/* ─── MEMO ─── */
+let _activeMemo = null;
+
+function showMemo(order) {
+  _activeMemo = order;
+  const s = DB.settings;
+  const bal = (order.price - order.advance).toFixed(2);
+  const meas = order.measurements;
+  const hasMeas = meas && (meas.chest || meas.waist || meas.shoulder || meas.length);
+
+  document.getElementById('memoBody').innerHTML = `
+  <div style="max-width:480px;margin:0 auto;font-size:13px;line-height:1.5;">
+    <div style="text-align:center;padding-bottom:16px;border-bottom:2px solid var(--ink);margin-bottom:16px;">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;color:var(--ink);">✂️ ${escHtml(s.bizname)}</div>
+      <div style="font-size:12px;color:var(--gray);letter-spacing:3px;margin-top:2px;">مدينة الفرشان</div>
+      <div style="font-size:12px;color:var(--gray);margin-top:4px;">${escHtml(s.address)} &nbsp;|&nbsp; ${escHtml(s.phone)}</div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--gray);margin-bottom:14px;">
+      <span><strong>Order #:</strong> ${escHtml(order.id)}</span>
+      <span><strong>Date:</strong> ${fmtDate(order.date)}</span>
+    </div>
+    <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Customer</div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px;border:1px solid var(--border2);">
+      <tr><td style="padding:8px 10px;"><strong>${escHtml(order.name)}</strong></td><td style="padding:8px 10px;">${escHtml(order.phone)}</td></tr>
+      ${order.address ? `<tr><td colspan="2" style="padding:6px 10px;color:var(--gray);font-size:12px;">${escHtml(order.address)}</td></tr>` : ''}
+    </table>
+    <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Order Details</div>
+    <table style="width:100%;border-collapse:collapse;margin-bottom:14px;">
+      <thead><tr style="background:var(--ink);color:white;">
+        <th style="padding:8px 10px;font-size:11px;text-align:left;font-weight:600;">Garment</th>
+        <th style="padding:8px 10px;font-size:11px;text-align:left;font-weight:600;">Fabric</th>
+        <th style="padding:8px 10px;font-size:11px;text-align:center;font-weight:600;">Qty (m)</th>
+        <th style="padding:8px 10px;font-size:11px;text-align:right;font-weight:600;">Amount (QAR)</th>
+      </tr></thead>
+      <tbody><tr style="border-bottom:1px solid var(--border2);">
+        <td style="padding:9px 10px;">${escHtml(order.garment)}</td>
+        <td style="padding:9px 10px;">${escHtml(order.fabric)}${order.color ? ' — ' + escHtml(order.color) : ''}</td>
+        <td style="padding:9px 10px;text-align:center;">${order.qty}m${order.pieces>1?' × '+order.pieces+' pcs':''}</td>
+        <td style="padding:9px 10px;text-align:right;font-weight:700;">${order.price.toFixed(2)}</td>
+      </tr></tbody>
+    </table>
+    ${hasMeas ? `<div style="font-size:12px;color:var(--text2);display:flex;gap:14px;flex-wrap:wrap;margin-bottom:12px;padding:10px;background:var(--cream);border-radius:6px;">
+      ${meas.chest    ? `<span>Chest: <strong>${meas.chest}cm</strong></span>` : ''}
+      ${meas.waist    ? `<span>Waist: <strong>${meas.waist}cm</strong></span>` : ''}
+      ${meas.shoulder ? `<span>Shoulder: <strong>${meas.shoulder}cm</strong></span>` : ''}
+      ${meas.length   ? `<span>Length: <strong>${meas.length}cm</strong></span>` : ''}
+      ${meas.hip      ? `<span>Hip: <strong>${meas.hip}cm</strong></span>` : ''}
+      ${meas.sleeve   ? `<span>Sleeve: <strong>${meas.sleeve}cm</strong></span>` : ''}
+    </div>` : ''}
+    <div style="max-width:240px;margin-left:auto;">
+      <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;border-bottom:1px solid var(--border2);">
+        <span>Subtotal</span><span>QAR ${order.price.toFixed(2)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:5px 0;font-size:13px;">
+        <span>Advance Paid</span><span style="color:var(--green);">QAR ${order.advance.toFixed(2)}</span>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:9px 0;font-size:16px;font-weight:700;border-top:2px solid var(--ink);margin-top:4px;">
+        <span>Balance Due</span><span>QAR ${bal}</span>
+      </div>
+    </div>
+    <div style="margin-top:14px;padding:10px 13px;background:var(--cream);border-radius:8px;font-size:12px;">
+      <strong>Delivery Date:</strong> ${fmtDate(order.delivery)}
+      ${order.notes ? `<br><strong>Instructions:</strong> ${escHtml(order.notes)}` : ''}
+    </div>
+    <div style="text-align:center;margin-top:18px;padding-top:14px;border-top:1px dashed var(--border);color:var(--gray);">
+      <div style="font-family:'Cormorant Garamond',serif;font-size:17px;color:var(--ink);margin-bottom:4px;">${escHtml(s.footer)}</div>
+      <div style="font-size:11px;">Please retain this receipt for collection • يرجى الاحتفاظ بهذه الوصل</div>
+    </div>
+  </div>`;
+  openModal('memoOverlay');
+}
+
+function printMemo() {
+  const html = document.getElementById('memoBody').innerHTML;
+  // Open a new window for printing - most reliable cross-browser approach
+  const win = window.open('', '_blank', 'width=600,height=800');
+  if (!win) {
+    // Fallback if popup blocked
+    document.getElementById('printZone').innerHTML = html;
+    document.getElementById('printZone').style.display = 'block';
+    // Close all modals temporarily
+    document.querySelectorAll('.overlay').forEach(o => o.style.visibility = 'hidden');
+    setTimeout(() => {
+      window.print();
+      document.getElementById('printZone').style.display = 'none';
+      document.getElementById('printZone').innerHTML = '';
+      document.querySelectorAll('.overlay').forEach(o => o.style.visibility = '');
+    }, 300);
+    return;
+  }
+  win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Cash Memo — Madinat Al Furshan</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'DM Sans',sans-serif; font-size:13px; color:#1a2636; padding:32px; background:white; }
+  :root {
+    --ink:#0a1520; --gold:#b8893a; --cream:#f8f4ee; --cream2:#ede8df;
+    --white:#fff; --gray:#6b7f96; --green:#1a7a45; --red:#b02a2a;
+    --border:#ddd6cc; --border2:#ebe5dc; --text:#1a2636; --text2:#4a5f77;
+  }
+</style>
+</head>
+<body>
+${html}
+<script>
+  window.onload = function() {
+    setTimeout(function() { window.print(); window.close(); }, 400);
+  };
+<\/script>
+</body>
+</html>`);
+  win.document.close();
+}
+
+/* ─── RENDER: MY ORDERS ─── */
+function renderMyOrders() {
+  const mine = DB.orders.filter(o => o.createdBy === CU.name);
+  const tb = document.getElementById('myOrdersTb');
+  if (!mine.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="8">No orders yet. Create your first order.</td></tr>'; return; }
+  tb.innerHTML = mine.map(o => `<tr>
+    <td class="td-mono td-bold">${o.id}</td>
+    <td class="td-bold">${escHtml(o.name)}</td>
+    <td>${escHtml(o.garment)}</td>
+    <td>${escHtml(o.fabric)}</td>
+    <td style="font-size:12px;">${fmtDate(o.delivery)}</td>
+    <td><strong>QAR ${o.price.toFixed(2)}</strong></td>
+    <td>${statusBadge(o.status)}</td>
+    <td><button class="btn btn-ghost btn-sm" onclick="viewOrder('${o.id}')">View</button></td>
+  </tr>`).join('');
+}
+
+/* ─── RENDER: DASHBOARD ─── */
+function renderDashboard() {
+  const total = DB.orders.length;
+  const rev = DB.orders.reduce((s,o)=>s+o.price,0);
+  const active = DB.orders.filter(o=>o.status==='Pending'||o.status==='In Progress').length;
+  const ready = DB.orders.filter(o=>o.status==='Ready').length;
+
+  document.getElementById('dashStats').innerHTML = [
+    { icon:'📋', cls:'si-ink',   val:total,          lbl:'Total Orders'        },
+    { icon:'💰', cls:'si-gold',  val:'QAR '+rev.toFixed(0), lbl:'Total Revenue'   },
+    { icon:'⏳', cls:'si-blue',  val:active,         lbl:'Active Orders'       },
+    { icon:'✅', cls:'si-green', val:ready,          lbl:'Ready for Pickup'    },
+  ].map(s=>`<div class="stat-card"><div class="stat-icon ${s.cls}">${s.icon}</div><div class="stat-val">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+
+  renderRevenueChart();
+  renderTopFabrics();
+  renderDashStock();
+}
+
+function renderRevenueChart() {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const now = new Date();
+  const data = [];
+  for (let i=5;i>=0;i--) {
+    const m = (now.getMonth()-i+12)%12;
+    const y = now.getFullYear()-(now.getMonth()-i<0?1:0);
+    const r = DB.orders.filter(o=>{const d=new Date(o.date);return d.getMonth()===m&&d.getFullYear()===y;}).reduce((s,o)=>s+o.price,0);
+    data.push({label:months[m],value:r});
+  }
+  const mx = Math.max(...data.map(d=>d.value),1);
+  document.getElementById('revChart').innerHTML = data.map(d=>`
+    <div class="chart-col">
+      <div class="chart-val">${d.value>0?d.value.toFixed(0):''}</div>
+      <div class="chart-bar" style="height:${Math.max(4,(d.value/mx)*130)}px;"></div>
+      <div class="chart-lbl">${d.label}</div>
+    </div>`).join('');
+}
+
+function renderTopFabrics() {
+  const counts = {};
+  DB.orders.forEach(o=>{counts[o.fabric]=(counts[o.fabric]||0)+1;});
+  const total = DB.orders.length || 1;
+  const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  if (!sorted.length) { document.getElementById('topFabrics').innerHTML = '<p style="color:var(--gray);font-size:13px;">No order data yet.</p>'; return; }
+  document.getElementById('topFabrics').innerHTML = sorted.map(([f,c])=>`
+    <div class="fab-row">
+      <div class="fab-name">${escHtml(f)}</div>
+      <div class="fab-bar-w"><div class="fab-bar-f" style="width:${(c/total)*100}%"></div></div>
+      <div class="fab-pct">${Math.round((c/total)*100)}%</div>
+    </div>`).join('');
+}
+
+function renderDashStock() {
+  const el = document.getElementById('dashStockGrid');
+  const entries = Object.entries(DB.stock);
+  if (!entries.length) { el.innerHTML = '<div style="color:var(--gray);font-size:13px;padding:10px;grid-column:1/-1;">No stock data yet. Go to Fabric Stock → Add Fabric Purchase.</div>'; return; }
+  el.innerHTML = entries.slice(0,6).map(([name,s]) => stockCardHTML(name, s)).join('');
+}
+
+function stockCardHTML(name, s) {
+  const rem = Math.max(0, +(s.purchased - s.used).toFixed(2));
+  const pct = s.purchased > 0 ? Math.min(100, (rem/s.purchased)*100) : 0;
+  const cls = pct>60?'sb-high':pct>25?'sb-mid':'sb-low';
+  const warn = pct<20 && s.purchased>0 ? '<span style="font-size:11px;color:var(--red);">⚠️ Low</span>' : '';
+  return `<div class="stock-card">
+    <div class="stock-name">${escHtml(name)} ${warn}</div>
+    <div class="stock-nums">
+      <div class="sn-item"><div class="sn-val sn-blue">${s.purchased}</div><div class="sn-lbl">Purchased</div></div>
+      <div class="sn-item"><div class="sn-val sn-red">${s.used.toFixed(1)}</div><div class="sn-lbl">Used</div></div>
+      <div class="sn-item"><div class="sn-val sn-green">${rem.toFixed(1)}</div><div class="sn-lbl">Remaining</div></div>
+    </div>
+    <div class="stock-bar-wrap"><div class="stock-bar ${cls}" style="width:${pct}%"></div></div>
+  </div>`;
+}
+
+/* ─── RENDER: ORDER HISTORY ─── */
+function renderOrderHistory() {
+  const q   = (document.getElementById('ohSearch')?.value||'').toLowerCase();
+  const frm = document.getElementById('ohFrom')?.value||'';
+  const to  = document.getElementById('ohTo')?.value||'';
+  let list  = [...DB.orders].sort((a,b)=>new Date(b.date)-new Date(a.date));
+  if (q)   list = list.filter(o=>o.name.toLowerCase().includes(q)||o.id.toLowerCase().includes(q)||o.garment.toLowerCase().includes(q)||o.fabric.toLowerCase().includes(q));
+  if (frm) list = list.filter(o=>o.date>=frm);
+  if (to)  list = list.filter(o=>o.date<=to);
+
+  const rev = list.reduce((s,o)=>s+o.price,0);
+  const adv = list.reduce((s,o)=>s+o.advance,0);
+
+  document.getElementById('ohStats').innerHTML = [
+    { icon:'🧾', cls:'si-ink',   val:list.length,        lbl:'Orders'          },
+    { icon:'💰', cls:'si-gold',  val:rev.toFixed(2),     lbl:'Revenue (QAR)'   },
+    { icon:'✅', cls:'si-green', val:adv.toFixed(2),     lbl:'Collected (QAR)' },
+    { icon:'⏳', cls:'si-red',   val:(rev-adv).toFixed(2),lbl:'Outstanding (QAR)' },
+  ].map(s=>`<div class="stat-card"><div class="stat-icon ${s.cls}">${s.icon}</div><div class="stat-val">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+
+  document.getElementById('ohCount').textContent = list.length + ' records';
+  const tb = document.getElementById('ohTb');
+  if (!list.length) { tb.innerHTML = '<tr class="empty-row"><td colspan="13">No records found for this filter.</td></tr>'; return; }
+
+  tb.innerHTML = list.map(o => `<tr>
+    <td style="font-size:12px;font-weight:600;">${fmtDate(o.date)}</td>
+    <td class="td-mono td-bold" style="font-size:11px;">${o.id}</td>
+    <td class="td-bold">${escHtml(o.name)}</td>
+    <td style="font-size:12px;">${escHtml(o.phone)}</td>
+    <td>${escHtml(o.garment)}</td>
+    <td>${escHtml(o.fabric)}</td>
+    <td style="text-align:center;">${o.qty}</td>
+    <td style="text-align:center;">${o.pieces||1}</td>
+    <td><strong>QAR ${o.price.toFixed(2)}</strong></td>
+    <td style="color:var(--green);">QAR ${o.advance.toFixed(2)}</td>
+    <td style="color:${(o.price-o.advance)>0.001?'var(--red)':'var(--green)'};">QAR ${(o.price-o.advance).toFixed(2)}</td>
+    <td>${statusBadge(o.status)}</td>
+    <td style="font-size:12px;color:var(--gray);">${escHtml(o.createdBy)}</td>
+    <td style="display:flex;gap:5px;align-items:center;">
+      <button class="btn btn-ghost btn-sm" onclick="viewOrder('${o.id}')">View</button>
+      <select class="search-bar" style="width:auto;padding:5px 8px;font-size:11px;" onchange="updateOrderStatus('${o.id}',this.value);this.value=''">
+        <option value="">Status▾</option>
+        <option>Pending</option><option>In Progress</option><option>Ready</option><option>Delivered</option>
+      </select>
+    </td>
+  </tr>`).join('');
+}
+
+function clearOHFilter() {
+  ['ohSearch','ohFrom','ohTo'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  renderOrderHistory();
+}
+
+async function updateOrderStatus(id, status) {
+  if (!status) return;
+  showLoader('Updating status...');
+  try {
+    const result = await apiPost({ action: 'updateStatus', data: { id, status } });
+    if (result.error) throw new Error(result.error);
+    const o = DB.orders.find(x=>x.id===id);
+    if (o) o.status = status;
+    hideLoader();
+    renderOrderHistory();
+    toast('Status updated: '+status, 'ok');
+  } catch(e) {
+    hideLoader();
+    toast('❌ Error: ' + e.message, 'err');
+  }
+}
+
+/* ─── RENDER: STOCK ─── */
+function renderStock() {
+  const allFabrics = new Set([...Object.keys(DB.stock), ...DB.fabricTypes]);
+  const el = document.getElementById('stockCards');
+  if (!allFabrics.size) { el.innerHTML='<div style="color:var(--gray);font-size:13px;padding:10px;grid-column:1/-1;">No fabric stock yet. Click "Add Fabric Purchase" to get started.</div>'; }
+  else el.innerHTML = [...allFabrics].map(name => stockCardHTML(name, DB.stock[name]||{purchased:0,used:0})).join('');
+
+  // Purchase history
+  const pt = document.getElementById('purchaseTb');
+  const purchases = [...DB.purchases].reverse();
+  document.getElementById('purchaseCount').textContent = purchases.length;
+  if (!purchases.length) pt.innerHTML = '<tr class="empty-row"><td colspan="4">No purchases recorded.</td></tr>';
+  else pt.innerHTML = purchases.map(p=>`<tr>
+    <td style="font-size:12px;font-weight:600;">${fmtDate(p.date)}</td>
+    <td class="td-bold">${escHtml(p.name)}</td>
+    <td><strong>${p.qty} m</strong></td>
+    <td style="color:var(--gray);font-size:12px;">${escHtml(p.notes)||'—'}</td>
+  </tr>`).join('');
+
+  // Usage history
+  const usages = DB.orders.map(o=>({date:o.date,fabric:o.fabric,qty:o.qty,id:o.id})).sort((a,b)=>new Date(b.date)-new Date(a.date));
+  const ut = document.getElementById('usageTb');
+  document.getElementById('usageCount').textContent = usages.length;
+  if (!usages.length) ut.innerHTML = '<tr class="empty-row"><td colspan="4">No usage recorded.</td></tr>';
+  else ut.innerHTML = usages.map(u=>`<tr>
+    <td style="font-size:12px;font-weight:600;">${fmtDate(u.date)}</td>
+    <td class="td-bold">${escHtml(u.fabric)}</td>
+    <td style="color:var(--red);font-weight:600;">${u.qty} m</td>
+    <td style="font-size:12px;color:var(--gray);" class="td-mono">${u.id}</td>
+  </tr>`).join('');
+}
+
+function openBuyFabric() {
+  document.getElementById('bf_name').value='';
+  document.getElementById('bf_qty').value='';
+  document.getElementById('bf_date').value=today();
+  document.getElementById('bf_notes').value='';
+  document.getElementById('bfAlert').className='hidden';
+  populateFabricSelect();
+  openModal('buyFabricOverlay');
+}
+
+async function saveFabricPurchase() {
+  const name  = document.getElementById('bf_name').value.trim();
+  const qty   = parseFloat(document.getElementById('bf_qty').value);
+  const date  = document.getElementById('bf_date').value;
+  const notes = document.getElementById('bf_notes').value.trim();
+  if (!name) { showAlert('bfAlert','a-err','Please enter the fabric name.'); return; }
+  if (!qty || qty<=0) { showAlert('bfAlert','a-err','Please enter a valid quantity.'); return; }
+  if (!date) { showAlert('bfAlert','a-err','Please select the purchase date.'); return; }
+  if (!DB.stock[name]) DB.stock[name] = { purchased:0, used:0 };
+  DB.stock[name].purchased = +(DB.stock[name].purchased + qty).toFixed(2);
+  if (!DB.fabricTypes.includes(name)) { DB.fabricTypes.push(name); populateFabricSelect(); }
+  DB.purchases.push({ date, name, qty, notes });
+  closeModal('buyFabricOverlay');
+  renderStock();
+  toast(`${qty}m of ${name} added to stock!`, 'ok');
+}
+
+/* ─── RENDER: ANALYTICS ─── */
+function renderAnalytics() {
+  const rev = DB.orders.reduce((s,o)=>s+o.price,0);
+  const adv = DB.orders.reduce((s,o)=>s+o.advance,0);
+  const del = DB.orders.filter(o=>o.status==='Delivered').length;
+  const avg = DB.orders.length ? rev/DB.orders.length : 0;
+
+  document.getElementById('analyticsStats').innerHTML = [
+    { icon:'📋', cls:'si-ink',   val:DB.orders.length,    lbl:'Total Orders'         },
+    { icon:'💰', cls:'si-gold',  val:rev.toFixed(2),      lbl:'Revenue (QAR)'        },
+    { icon:'✅', cls:'si-green', val:adv.toFixed(2),      lbl:'Collected (QAR)'      },
+    { icon:'📦', cls:'si-red',   val:(rev-adv).toFixed(2),lbl:'Outstanding (QAR)'    },
+  ].map(s=>`<div class="stat-card"><div class="stat-icon ${s.cls}">${s.icon}</div><div class="stat-val">${s.val}</div><div class="stat-lbl">${s.lbl}</div></div>`).join('');
+
+  const gc = {};
+  DB.orders.forEach(o=>{gc[o.garment]=(gc[o.garment]||0)+1;});
+  const t = DB.orders.length || 1;
+  document.getElementById('garmentBreak').innerHTML = Object.entries(gc).sort((a,b)=>b[1]-a[1]).map(([g,c])=>`
+    <div class="fab-row">
+      <div class="fab-name" style="flex:0 0 120px;font-size:12px;">${escHtml(g)}</div>
+      <div class="fab-bar-w"><div class="fab-bar-f" style="width:${(c/t)*100}%;background:var(--ink);"></div></div>
+      <div class="fab-pct">${c}</div>
+    </div>`).join('') || '<p style="color:var(--gray);font-size:13px;">No data yet.</p>';
+
+  document.getElementById('paySummary').innerHTML = [
+    ['💰 Total Revenue',      'QAR '+rev.toFixed(2),       'var(--cream)',      'var(--ink)'],
+    ['✅ Advance Collected',   'QAR '+adv.toFixed(2),       'var(--green-b)',    'var(--green)'],
+    ['⏳ Balance Outstanding', 'QAR '+(rev-adv).toFixed(2), 'var(--red-b)',      'var(--red)'],
+    ['🚀 Delivered Orders',   del+' / '+DB.orders.length,  'var(--blue-b)',     'var(--blue)'],
+    ['📊 Avg Order Value',    'QAR '+avg.toFixed(2),        'var(--amber-b)',    'var(--amber)'],
+  ].map(([l,v,bg,col])=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:11px 14px;background:${bg};border-radius:8px;">
+    <span style="font-size:13px;color:var(--text2);">${l}</span>
+    <span style="font-weight:700;color:${col};">${v}</span>
+  </div>`).join('');
+}
+
+/* ─── SETTINGS ─── */
+function renderSettings() {
+  const s = DB.settings;
+  document.getElementById('s_bizname').value = s.bizname || '';
+  document.getElementById('s_owner').value   = s.ownerName || '';
+  document.getElementById('s_phone').value   = s.phone || '';
+  document.getElementById('s_address').value = s.address || '';
+  document.getElementById('s_footer').value  = s.footer || '';
+  document.getElementById('bizSaveAlert').className = 'hidden';
+  document.getElementById('cpAlert').className = 'hidden';
+  ['cp_current','cp_new','cp_confirm'].forEach(id=>{ document.getElementById(id).value=''; });
+  renderUserList();
+  renderFabricTypeList();
+  renderGarmentTypeList();
+}
+
+async function saveBizInfo() {
+  const biz = document.getElementById('s_bizname').value.trim();
+  if (!biz) { showAlert('bizSaveAlert','a-err','Business name cannot be empty.'); return; }
+  DB.settings.bizname   = biz;
+  DB.settings.ownerName = document.getElementById('s_owner').value.trim();
+  DB.settings.phone     = document.getElementById('s_phone').value.trim();
+  DB.settings.address   = document.getElementById('s_address').value.trim();
+  DB.settings.footer    = document.getElementById('s_footer').value.trim();
+  document.getElementById('topBizName').textContent = DB.settings.bizname;
+  showLoader('Saving settings...');
+  try {
+    await apiPost({ action: 'saveSettings', data: DB.settings });
+    hideLoader();
+    showAlert('bizSaveAlert','a-ok','✅ Business information saved to Google Sheets!');
+    toast('Settings saved!', 'ok');
+  } catch(e) {
+    hideLoader();
+    showAlert('bizSaveAlert','a-err','❌ Error: ' + e.message);
+  }
+}
+
+async function changeMyPassword() {
+  const cur  = document.getElementById('cp_current').value;
+  const nw   = document.getElementById('cp_new').value;
+  const conf = document.getElementById('cp_confirm').value;
+  if (cur !== CU.pass) { showAlert('cpAlert','a-err','❌ Current password is incorrect.'); return; }
+  if (nw.length < 4)   { showAlert('cpAlert','a-err','New password must be at least 4 characters.'); return; }
+  if (nw !== conf)     { showAlert('cpAlert','a-err','New passwords do not match.'); return; }
+  DB.users[CU.username].pass = nw;
+  CU.pass = nw;
+  showLoader('Updating password...');
+  try {
+    await apiPost({ action: 'saveUser', data: { username: CU.username, name: CU.name, role: CU.role, pass: nw } });
+    hideLoader();
+    showAlert('cpAlert','a-ok','✅ Password updated successfully!');
+    ['cp_current','cp_new','cp_confirm'].forEach(id=>{ document.getElementById(id).value=''; });
+    toast('Password updated!', 'ok');
+  } catch(e) { hideLoader(); showAlert('cpAlert','a-err','❌ Error: ' + e.message); }
+}
+
+/* ─── USER MANAGEMENT ─── */
+function renderUserList() {
+  const el = document.getElementById('userListEl');
+  const users = Object.values(DB.users);
+  if (!users.length) { el.innerHTML='<p style="color:var(--gray);font-size:13px;">No users found.</p>'; return; }
+  el.innerHTML = users.map(u=>`
+    <div class="user-row">
+      <div class="user-row-info">
+        <div class="user-row-name">${escHtml(u.name)}</div>
+        <div class="user-row-meta">
+          <span class="td-mono" style="font-size:12px;">@${escHtml(u.username)}</span>
+          <span class="badge ${u.role==='owner'?'b-gold':'b-blue'}">${u.role}</span>
+        </div>
+      </div>
+      <div class="user-row-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openEditUser('${u.username}')">✏️ Edit</button>
+        <button class="btn btn-ghost btn-sm" onclick="openResetUserPass('${u.username}')">🔑 Password</button>
+        ${u.username!=='owner'?`<button class="btn btn-danger btn-sm" onclick="deleteUser('${u.username}')">Delete</button>`:''}
+      </div>
+    </div>`).join('');
+}
+
+function openUserModal() {
+  _editingUser = null;
+  document.getElementById('userModalTitle').textContent = 'Add New User';
+  document.getElementById('umSaveBtn').textContent = 'Create User';
+  document.getElementById('um_name').value = '';
+  document.getElementById('um_user').value = '';
+  document.getElementById('um_user').readOnly = false;
+  document.getElementById('um_pass').value = '';
+  document.getElementById('um_pass').placeholder = 'Minimum 4 characters';
+  document.getElementById('um_pass_label').textContent = 'Password *';
+  document.getElementById('um_role').value = 'employee';
+  document.getElementById('umAlert').className = 'hidden';
+  openModal('userOverlay');
+}
+
+function openEditUser(username) {
+  const u = DB.users[username]; if (!u) return;
+  _editingUser = username;
+  document.getElementById('userModalTitle').textContent = 'Edit User — ' + u.name;
+  document.getElementById('umSaveBtn').textContent = 'Save Changes';
+  document.getElementById('um_name').value = u.name;
+  document.getElementById('um_user').value = u.username;
+  document.getElementById('um_user').readOnly = true;
+  document.getElementById('um_pass').value = '';
+  document.getElementById('um_pass').placeholder = 'Leave blank to keep current password';
+  document.getElementById('um_pass_label').textContent = 'New Password (optional)';
+  document.getElementById('um_role').value = u.role;
+  document.getElementById('umAlert').className = 'hidden';
+  openModal('userOverlay');
+}
+
+let _resetPassUser = null;
+function openResetUserPass(username) {
+  _resetPassUser = username;
+  const u = DB.users[username];
+  document.getElementById('cpUserLabel').textContent = u.name + ' (@' + u.username + ')';
+  document.getElementById('cup_new').value = '';
+  document.getElementById('cup_confirm').value = '';
+  document.getElementById('cupAlert').className = 'hidden';
+  openModal('changePassOverlay');
+}
+
+async function saveUserPassword() {
+  const nw   = document.getElementById('cup_new').value;
+  const conf = document.getElementById('cup_confirm').value;
+  if (!nw || nw.length < 4) { showAlert('cupAlert','a-err','Password must be at least 4 characters.'); return; }
+  if (nw !== conf)           { showAlert('cupAlert','a-err','Passwords do not match.'); return; }
+  const u = DB.users[_resetPassUser];
+  u.pass = nw;
+  showLoader('Updating password...');
+  try {
+    await apiPost({ action: 'saveUser', data: { username: _resetPassUser, name: u.name, role: u.role, pass: nw } });
+    hideLoader(); closeModal('changePassOverlay'); toast('Password updated for @' + _resetPassUser + '!', 'ok');
+  } catch(e) { hideLoader(); showAlert('cupAlert','a-err','❌ Error: ' + e.message); }
+}
+
+async function saveUser() {
+  const name     = document.getElementById('um_name').value.trim();
+  const username = document.getElementById('um_user').value.trim().toLowerCase();
+  const pass     = document.getElementById('um_pass').value;
+  const role     = document.getElementById('um_role').value;
+
+  if (!name)     { showAlert('umAlert','a-err','Full name is required.'); return; }
+  if (!username) { showAlert('umAlert','a-err','Username is required.'); return; }
+  if (!/^[a-z0-9_]+$/.test(username)) { showAlert('umAlert','a-err','Username can only contain letters, numbers, and underscores.'); return; }
+
+  if (_editingUser) {
+    // Edit mode
+    if (pass && pass.length < 4) { showAlert('umAlert','a-err','Password must be at least 4 characters.'); return; }
+    DB.users[_editingUser].name = name;
+    DB.users[_editingUser].role = role;
+    if (pass) DB.users[_editingUser].pass = pass;
+    const userData = { username: _editingUser, name, role, pass: pass||undefined };
+    showLoader('Saving user...');
+    try {
+      await apiPost({ action: 'saveUser', data: userData });
+      hideLoader(); closeModal('userOverlay'); renderUserList(); toast('User updated!', 'ok');
+    } catch(e) { hideLoader(); showAlert('umAlert','a-err','❌ Error: ' + e.message); }
+  } else {
+    if (!pass || pass.length < 4) { showAlert('umAlert','a-err','Password must be at least 4 characters.'); return; }
+    if (DB.users[username]) { showAlert('umAlert','a-err','Username already exists. Choose another.'); return; }
+    DB.users[username] = { username, pass, name, role };
+    showLoader('Creating user...');
+    try {
+      await apiPost({ action: 'saveUser', data: { username, pass, name, role } });
+      hideLoader(); closeModal('userOverlay'); renderUserList(); toast('User ' + name + ' created!', 'ok');
+    } catch(e) { hideLoader(); showAlert('umAlert','a-err','❌ Error: ' + e.message); }
+  }
+}
+
+async function deleteUser(username) {
+  if (username === 'owner') { toast('Cannot delete the main owner account.','err'); return; }
+  const u = DB.users[username];
+  if (!confirm(`Delete user @${username} (${u?.name})?\n\nThis cannot be undone.`)) return;
+  delete DB.users[username];
+  showLoader('Deleting user...');
+  try {
+    await apiPost({ action: 'deleteUser', data: { username } });
+    hideLoader(); renderUserList(); toast('User deleted.', 'ok');
+  } catch(e) { hideLoader(); toast('❌ Error: ' + e.message, 'err'); }
+}
+
+/* ─── FABRIC TYPES ─── */
+function renderFabricTypeList() {
+  const el = document.getElementById('fabricTypeList');
+  el.innerHTML = DB.fabricTypes.map(f=>`
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--cream2);border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--ink);">
+      ${escHtml(f)}
+      <button onclick="removeFabricType(this)" data-name="${escHtml(f)}" style="background:none;border:none;color:var(--red);font-size:15px;line-height:1;cursor:pointer;padding:0;display:flex;align-items:center;">×</button>
+    </span>`).join('');
+}
+
+function addFabricType() {
+  const v = document.getElementById('newFabricInput').value.trim();
+  if (!v) { toast('Please enter a fabric name.'); return; }
+  if (DB.fabricTypes.map(f=>f.toLowerCase()).includes(v.toLowerCase())) { toast('This fabric type already exists.'); return; }
+  DB.fabricTypes.push(v);
+  if (!DB.stock[v]) DB.stock[v] = { purchased:0, used:0 };
+  apiPost({ action: 'saveSettings', data: { fabricTypes: DB.fabricTypes } });
+  renderFabricTypeList();
+  populateFabricSelect();
+  document.getElementById('newFabricInput').value = '';
+  toast(v + ' added to fabric types!', 'ok');
+}
+
+function removeFabricType(btn) {
+  const f = btn.getAttribute('data-name');
+  if (!confirm(`Remove fabric type "${f}"?\n\nExisting stock data for this fabric will remain.`)) return;
+  DB.fabricTypes = DB.fabricTypes.filter(x=>x!==f);
+  apiPost({ action: 'saveSettings', data: { fabricTypes: DB.fabricTypes } });
+  renderFabricTypeList();
+  populateFabricSelect();
+}
+
+function renderGarmentTypeList() {
+  const el = document.getElementById('garmentTypeList');
+  if (!el) return;
+  const types = DB.garmentTypes || [];
+  el.innerHTML = types.map(g=>`
+    <span style="display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:var(--cream2);border:1px solid var(--border);border-radius:20px;font-size:12px;font-weight:500;color:var(--ink);">
+      ${escHtml(g)}
+      <button onclick="removeGarmentType(this)" data-name="${escHtml(g)}" style="background:none;border:none;color:var(--red);font-size:15px;line-height:1;cursor:pointer;padding:0;display:flex;align-items:center;">×</button>
+    </span>`).join('') || '<p style="color:var(--gray);font-size:13px;">No garment types yet.</p>';
+}
+
+function addGarmentType() {
+  const v = document.getElementById('newGarmentInput').value.trim();
+  if (!v) { toast('Please enter a garment type name.'); return; }
+  if (!DB.garmentTypes) DB.garmentTypes = [];
+  if (DB.garmentTypes.map(g=>g.toLowerCase()).includes(v.toLowerCase())) { toast('This garment type already exists.'); return; }
+  DB.garmentTypes.push(v);
+  apiPost({ action: 'saveSettings', data: { garmentTypes: DB.garmentTypes } });
+  renderGarmentTypeList();
+  populateFabricSelect();
+  document.getElementById('newGarmentInput').value = '';
+  toast(v + ' added!', 'ok');
+}
+
+function removeGarmentType(btn) {
+  const g = btn.getAttribute('data-name');
+  if (!confirm('Remove garment type "' + g + '"?')) return;
+  DB.garmentTypes = (DB.garmentTypes||[]).filter(x=>x!==g);
+  apiPost({ action: 'saveSettings', data: { garmentTypes: DB.garmentTypes } });
+  renderGarmentTypeList();
+  populateFabricSelect();
+}
+
+/* ─── DANGER ZONE ─── */
+async function clearStockData() {
+  if (!confirm('⚠️ Clear all fabric stock and purchase records?\n\nOrders will NOT be affected.\nThis cannot be undone.')) return;
+  DB.stock = {}; DB.purchases = [];
+  showLoader('Clearing stock...');
+  try {
+    await apiPost({ action: 'clearStock' });
+    hideLoader(); toast('Fabric stock data cleared.', 'ok');
+  } catch(e) { hideLoader(); toast('❌ Error: ' + e.message, 'err'); }
+}
+
+async function clearOrderData() {
+  if (!confirm('⚠️ Delete ALL order history?\n\nThis will permanently remove all orders and sales records.\nStock data will NOT be affected.\nThis cannot be undone.')) return;
+  // Also revert used stock from orders
+  DB.orders.forEach(o => { if(DB.stock[o.fabric]) DB.stock[o.fabric].used = Math.max(0, DB.stock[o.fabric].used - o.qty); });
+  DB.orders = [];
+  showLoader('Clearing orders...');
+  try {
+    await apiPost({ action: 'clearOrders' });
+    hideLoader(); toast('All orders cleared.', 'ok');
+  } catch(e) { hideLoader(); toast('❌ Error: ' + e.message, 'err'); }
+}
+
+async function factoryReset() {
+  if (!confirm('⚠️ FACTORY RESET\n\nThis will delete ALL orders, stock, and purchase records.\nUser accounts and settings will be kept.\n\nThis CANNOT be undone. Are you absolutely sure?')) return;
+  if (!confirm('Last chance — are you sure you want to delete all data?')) return;
+  DB.orders = []; DB.stock = {}; DB.purchases = [];
+  showLoader('Resetting...');
+  try {
+    await apiPost({ action: 'clearOrders' });
+    await apiPost({ action: 'clearStock' });
+    hideLoader(); toast('System reset. All data cleared.', 'ok');
+    setTimeout(doLogout, 1500);
+  } catch(e) { hideLoader(); toast('❌ Error: ' + e.message, 'err'); }
+}
+
+/* ─── VIEW ORDER ─── */
+function viewOrder(id) {
+  const o = DB.orders.find(x=>x.id===id); if (!o) return;
+  const bal = (o.price - o.advance).toFixed(2);
+  const meas = o.measurements;
+  document.getElementById('viewOrderBody').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;">
+      ${[
+        ['Order ID', `<span class="td-mono" style="font-size:12px;">${o.id}</span>`],
+        ['Status', statusBadge(o.status)],
+        ['Order Date', fmtDate(o.date)],
+        ['Delivery Date', fmtDate(o.delivery)],
+        ['Customer Name', `<strong>${escHtml(o.name)}</strong>`],
+        ['Phone', escHtml(o.phone)],
+        ['Garment', escHtml(o.garment)],
+        ['Fabric', escHtml(o.fabric) + (o.color ? ` — ${escHtml(o.color)}` : '')],
+        ['Quantity', o.qty + ' meters'],
+        ['Total Price', `<strong>QAR ${o.price.toFixed(2)}</strong>`],
+        ['Advance Paid', `<span style="color:var(--green)">QAR ${o.advance.toFixed(2)}</span>`],
+        ['Balance Due', `<strong style="color:var(--red)">QAR ${bal}</strong>`],
+        ['Entered By', escHtml(o.createdBy)],
+      ].map(([l,v])=>`<div>
+        <div style="font-size:10px;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:4px;">${l}</div>
+        <div style="font-size:13px;">${v}</div>
+      </div>`).join('')}
+    </div>
+    ${meas&&(meas.chest||meas.waist||meas.shoulder||meas.length) ? `
+    <div style="padding:12px 14px;background:var(--cream);border-radius:8px;font-size:12px;margin-bottom:12px;">
+      <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;">Measurements</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap;">
+        ${meas.chest?`<span>Chest: <strong>${meas.chest}cm</strong></span>`:''}
+        ${meas.waist?`<span>Waist: <strong>${meas.waist}cm</strong></span>`:''}
+        ${meas.shoulder?`<span>Shoulder: <strong>${meas.shoulder}cm</strong></span>`:''}
+        ${meas.length?`<span>Length: <strong>${meas.length}cm</strong></span>`:''}
+        ${meas.hip?`<span>Hip: <strong>${meas.hip}cm</strong></span>`:''}
+        ${meas.sleeve?`<span>Sleeve: <strong>${meas.sleeve}cm</strong></span>`:''}
+      </div>
+    </div>` : ''}
+    ${o.notes ? `<div style="padding:12px 14px;background:var(--cream);border-radius:8px;font-size:13px;"><strong>Instructions:</strong> ${escHtml(o.notes)}</div>` : ''}`;
+  document.getElementById('viewPrintBtn').onclick = () => { showMemo(o); closeModal('viewOrderOverlay'); };
+  openModal('viewOrderOverlay');
+}
+
+/* ─── MODAL HELPERS ─── */
+function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+/* ─── UTILITY FUNCTIONS ─── */
+function today() { return new Date().toISOString().split('T')[0]; }
+
+function fmtDate(d) {
+  if (!d) return '—';
+  try { return new Date(d+'T00:00:00').toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
+  catch(e) { return d; }
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function statusBadge(s) {
+  const map = { 'Pending':'b-gold', 'In Progress':'b-blue', 'Ready':'b-green', 'Delivered':'b-gray' };
+  return `<span class="badge ${map[s]||'b-gold'}">${escHtml(s||'Pending')}</span>`;
+}
+
+function showAlert(id, cls, msg) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'alert ' + cls;
+  el.textContent = msg;
+}
+
+let _toastTimer;
+function toast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (type ? ' t-'+type : '');
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.className = '', 3000);
+}
+</script>
+</body>
+</html>
+mdinat al furshan.html
+Displaying mdinat al furshan.html.
